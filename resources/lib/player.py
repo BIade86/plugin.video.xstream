@@ -58,7 +58,29 @@ class XstreamPlayer(xbmc.Player):
                         if int(episode) > 0: mediaType = 'episode'
                     if imdbID and mediaType:
                         if mediaType == 'movie' or mediaType == 'tvshow':
-                            metaInfo = meta.get_meta(self._mediaType, self.__sTitle, imdbID)
+                        	import re
+
+            	        	def remove_unicode(string_data):
+        			""" (str|unicode) -> (str|unicode)
+
+        			recovers ascii content from string_data
+        			"""
+                		if string_data is None:
+                    		return string_data
+
+                		if isinstance(string_data, str):
+                    			string_data = str(string_data.decode('ascii', 'ignore'))
+                		else:
+                    			string_data = string_data.encode('ascii', 'ignore')
+
+                		print string_data
+
+                		remove_ctrl_chars_regex = re.compile(r'[^\x20-\x7e]')
+
+                		return remove_ctrl_chars_regex.sub('', string_data)
+
+            			self.__sTitle = remove_unicode(self.__sTitle)	
+                        	metaInfo = meta.get_meta(self._mediaType, self.__sTitle, imdbID)
                         elif mediaType == 'season':
                             metaInfo = meta.get_seasons(TVShowTitle, imdbID, str(season))
                         elif mediaType == 'episode' and TVShowTitle:

@@ -219,6 +219,28 @@ class cGuiElement:
             return False
         oMetaget = metahandlers.MetaData()
         if self._mediaType == 'movie' or self._mediaType == 'tvshow':
+            import re
+
+        	def remove_unicode(string_data):
+			""" (str|unicode) -> (str|unicode)
+
+        	recovers ascii content from string_data
+        	"""
+        	if string_data is None:
+             	return string_data
+            if isinstance(string_data, str):
+            	string_data = str(string_data.decode('ascii', 'ignore'))
+        	else:
+            	string_data = string_data.encode('ascii', 'ignore')
+
+        	print string_data
+
+            remove_ctrl_chars_regex = re.compile(r'[^\x20-\x7e]')
+
+            return remove_ctrl_chars_regex.sub('', string_data)
+
+            self.__sTitle = remove_unicode(self.__sTitle)	
+            
             meta = oMetaget.get_meta(self._mediaType, self.__sTitle)
             #if self._mediaType == 'tvshow' and not self.__aItemValues['TVShowTitle']:
             #    self.setTVShowTitle(self.__sTitle)
